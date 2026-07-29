@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/entry-strategy-state.schema.json",
+  "title": "Entry strategy state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ticker", "mode", "current_phase", "zones_locked", "price_zones"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "ticker": {"type": "string", "pattern": "^[A-Z][A-Z0-9.-]{0,9}$"},
+    "mode": {"enum": ["initial", "update"]},
+    "current_phase": {"type": "integer", "minimum": 0, "maximum": 8},
+    "zones_locked": {"type": "boolean"},
+    "price_zones": {"type": "object", "additionalProperties": {"$ref": "#/$defs/zone"}},
+    "zone_revisions": {"type": "array", "items": {"$ref": "#/$defs/revision"}},
+    "medium_term_structure": {"enum": ["上昇", "レンジ", "下降", "判定困難", null]},
+    "short_term_state": {"enum": ["上昇加速", "通常調整", "深い調整", "反転試行", "反転確認", "上抜け試行", "上抜け確認", "ブレイク失敗", "下落加速", "判定困難", null]},
+    "event_dominance": {"enum": ["高", "中", "低", null]},
+    "plan_expiry": {"type": ["string", "null"]},
+    "next_review": {"type": ["string", "null"]}
+  },
+  "$defs": {
+    "zone": {"type": "object", "required": ["internal_id", "label", "low", "high", "currency"], "properties": {"internal_id": {"type": "string"}, "label": {"type": "string"}, "low": {"type": "number"}, "high": {"type": "number"}, "currency": {"const": "USD"}}, "additionalProperties": false},
+    "revision": {"type": "object", "required": ["old_zone", "new_zone", "reason", "plan_impact"], "properties": {"old_zone": {"$ref": "#/$defs/zone"}, "new_zone": {"$ref": "#/$defs/zone"}, "reason": {"type": "string", "minLength": 1}, "plan_impact": {"type": "string", "minLength": 1}}, "additionalProperties": false}
+  }
+}

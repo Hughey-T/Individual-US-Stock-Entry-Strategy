@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Final execution output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision", "risk", "invalidations", "plan_expiry", "next_review", "coverage", "execution_card"],
+  "properties": {
+    "decision": {"$ref": "#/$defs/decision"},
+    "risk": {"type": "object", "required": ["avoided_risk", "confidence", "primary_reason", "primary_short_term_risk", "missed_opportunity_risk"], "additionalProperties": {"type": "string"}},
+    "invalidations": {"type": "object", "required": ["condition_failure", "entry_plan_invalidation", "investment_thesis_review", "reference_stop"], "additionalProperties": {"type": "string"}},
+    "plan_expiry": {"type": "string", "minLength": 1},
+    "next_review": {"type": "string", "minLength": 1},
+    "coverage": {"type": "object", "required": ["overall", "items"], "properties": {"overall": {"enum": ["全項目実施", "一部限定分析", "重要欠落により判断確信度低下", "全面停止"]}, "items": {"type": "array", "items": {"type": "object", "required": ["item", "status", "freshness_constraint", "impact"]}}}},
+    "execution_card": {"type": "object", "required": ["current_action", "current_purchase_pct", "primary_route", "first_condition", "first_conditional_pct", "pre_event_cap_pct", "waiting_use", "primary_reason", "primary_short_term_risk", "avoided_risk", "entry_plan_invalidation", "investment_thesis_review", "expiry", "next_review", "confidence"]}
+  },
+  "$defs": {
+    "decision": {"type": "object", "required": ["current_action", "routes", "route_priority", "allocation"], "properties": {"current_action": {"enum": ["現在購入", "条件待ち", "購入計画中止", "個別銘柄分析へ差し戻し"]}, "routes": {"type": "array", "items": {"enum": ["現在値", "押し目", "上抜け", "イベント通過後"]}, "uniqueItems": true}, "route_priority": {"type": "array"}, "allocation": {"type": "object", "required": ["current_purchase_pct", "conditional_purchases_pct", "pre_event_cap_pct", "waiting_pct", "waiting_use", "rationale", "unit"], "properties": {"current_purchase_pct": {"type": "integer", "minimum": 0, "maximum": 100}, "conditional_purchases_pct": {"type": "array", "items": {"type": "integer", "minimum": 0, "maximum": 40}}, "pre_event_cap_pct": {"type": "integer", "minimum": 0, "maximum": 100}, "waiting_pct": {"type": "integer", "minimum": 0, "maximum": 100}, "waiting_use": {"type": "array", "items": {"type": "string"}}, "rationale": {"type": "string"}, "unit": {"const": "target_position_percent"}}}}}
+  }
+}
