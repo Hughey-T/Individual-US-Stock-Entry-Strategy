@@ -1,6 +1,6 @@
 import unittest
 
-from entry_strategy.engine import ConversationEngine, PHASE_SECTIONS
+from entry_strategy.engine import PHASE_SECTIONS, ConversationEngine
 
 
 class EngineTests(unittest.TestCase):

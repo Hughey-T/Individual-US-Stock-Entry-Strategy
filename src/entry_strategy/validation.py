@@ -75,7 +75,7 @@ def validate_allocation(data: dict[str, Any]) -> None:
 
 
 def validate_state(state: EntryState) -> None:
-    allowed = range(0, 9) if state.mode == "initial" else range(1, 3)
+    allowed = range(9) if state.mode == "initial" else range(1, 3)
     if state.current_phase not in allowed:
         raise ValidationError("Phaseがモードの範囲外です")
     if state.zones_locked != bool(state.price_zones):
