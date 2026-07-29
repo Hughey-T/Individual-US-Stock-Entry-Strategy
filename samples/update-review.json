@@ -1,1 +1,28 @@
-{"mode":"update","phase":2,"conditions_met":["主要支持帯で反転"],"conditions_unmet":["上抜け確認"],"maximum_rise_pct":4.2,"maximum_decline_pct":1.8,"entry_setup_invalidated":false,"opportunity_cost":"限定的","normal_volatility_effect":"ATR内","zones_review":"主要支持帯は機能","allocation_review":"適切","valid_reasoning":["事前の支持条件"],"corrections":["出来高確認を明確化"],"template_learning":["観測窓を固定する"]}
+{
+  "mode": "update",
+  "phase": 2,
+  "conditions_met": [
+    "主要支持帯で反転"
+  ],
+  "conditions_unmet": [
+    "上抜け確認"
+  ],
+  "maximum_rise_pct": 4.2,
+  "maximum_decline_pct": 1.8,
+  "entry_setup_invalidated": false,
+  "opportunity_cost": "限定的",
+  "normal_volatility_effect": "ATR内",
+  "zones_review": "主要支持帯は機能",
+  "allocation_review": "適切",
+  "valid_reasoning": [
+    "事前の支持条件"
+  ],
+  "corrections": [
+    "出来高確認を明確化"
+  ],
+  "template_learning": [
+    "観測窓を固定する"
+  ],
+  "observation_window": "条件成立後5営業日",
+  "prompt_next": false
+}

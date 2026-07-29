@@ -1,26 +1,16 @@
 openapi: 3.1.0
 info:
-  title: Entry Strategy Validation API
-  version: 1.0.0
-  description: 状態検証だけを行い、注文執行は扱わない。正本は instructions/custom-gpt-entry-strategy.md。
-paths:
-  /validate:
-    post:
-      summary: Entry Strategy状態を検証
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: './schemas/entry-strategy-state.schema.json'
-      responses:
-        '200':
-          description: 検証結果
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [valid, errors]
-                properties:
-                  valid: {type: boolean}
-                  errors: {type: array, items: {type: string}}
+  title: Entry Strategy Portable Schema Components
+  version: 2.0.0
+  description: >-
+    実装済みHTTP APIではなく、状態と最終出力の再利用可能なSchema参照を収録する設計資料。
+    このリポジトリはHTTPサーバー、稼働エンドポイント、注文執行を提供しない。
+x-runtime-available: false
+servers: []
+paths: {}
+components:
+  schemas:
+    EntryStrategyState:
+      $ref: './schemas/entry-strategy-state.schema.json'
+    EntryStrategyOutput:
+      $ref: './schemas/entry-strategy-output.schema.json'

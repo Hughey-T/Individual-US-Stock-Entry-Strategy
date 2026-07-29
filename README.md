@@ -11,11 +11,12 @@
 * Phase 4 で価格帯を固定し、変更は旧値・新値・理由・影響を監査記録へ保存
 * 行動、購入経路、比率、リスクを独立管理
 
-## 開発
+## 開発・検証
 
-Python 3.11 以上を使用します。ランタイム依存はありません。
+Python 3.11 以上を使用します。リポジトリをクリーンな仮想環境へcloneした後、次を上から実行します。`pip install -e '.[dev]'` によりパッケージと、JSON Schema検証・lint・format・type check用のdev依存が入るため、`PYTHONPATH`の手動設定は不要です。CIも同じコマンドを使用します。
 
 ```bash
+python -m pip install -e '.[dev]'
 python -m unittest discover -s tests -v
 python -m entry_strategy.validation --all
 ruff check .
@@ -23,7 +24,7 @@ ruff format --check .
 mypy src
 ```
 
-ローカル実行時は `PYTHONPATH=src` が必要です（テストは `tests/__init__.py` が設定します）。サンプルは `samples/`、正常・異常・旧形式データは `fixtures/` にあります。API 契約は `openapi.yaml` です。
+サンプルは `samples/`、正常・異常・旧形式データは `fixtures/` にあります。`openapi.yaml` は再利用可能なSchema部品を公開する設計資料であり、HTTPサーバーや稼働中のAPIを表しません。
 
 ## 免責
 

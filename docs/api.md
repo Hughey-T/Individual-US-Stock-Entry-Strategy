@@ -1,3 +1,3 @@
-# API仕様
+# OpenAPI設計資料
 
-`openapi.yaml` は検証エンドポイントの移植可能な契約である。これは注文APIではない。入力は状態Schema、出力は `valid` とエラー配列。現在のPythonパッケージはフレームワーク非依存の検証関数を提供し、HTTPサーバーを意図的に同梱しない。
+`openapi.yaml` は `components.schemas` から状態Schemaと最終出力Schemaを参照する、移植用の設計資料である。`paths` は空、`servers` は空、`x-runtime-available` は `false` であり、HTTPサーバーまたは実在する検証エンドポイントを表さない。実装済みの検証入口はPython関数と `python -m entry_strategy.validation --all` だけである。注文APIは対象外である。

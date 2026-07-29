@@ -1,19 +1,640 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Final execution output",
+  "$id": "https://example.invalid/entry-strategy-output.schema.json",
+  "title": "Phase 8 final output",
   "type": "object",
   "additionalProperties": false,
-  "required": ["decision", "risk", "invalidations", "plan_expiry", "next_review", "coverage", "execution_card"],
+  "required": [
+    "price_state",
+    "event_dominance",
+    "price_asymmetry",
+    "data_freshness",
+    "decision",
+    "invalidations",
+    "plan_expiry",
+    "next_review",
+    "coverage",
+    "execution_card"
+  ],
   "properties": {
-    "decision": {"$ref": "#/$defs/decision"},
-    "risk": {"type": "object", "required": ["avoided_risk", "confidence", "primary_reason", "primary_short_term_risk", "missed_opportunity_risk"], "additionalProperties": {"type": "string"}},
-    "invalidations": {"type": "object", "required": ["condition_failure", "entry_plan_invalidation", "investment_thesis_review", "reference_stop"], "additionalProperties": {"type": "string"}},
-    "plan_expiry": {"type": "string", "minLength": 1},
-    "next_review": {"type": "string", "minLength": 1},
-    "coverage": {"type": "object", "required": ["overall", "items"], "properties": {"overall": {"enum": ["全項目実施", "一部限定分析", "重要欠落により判断確信度低下", "全面停止"]}, "items": {"type": "array", "items": {"type": "object", "required": ["item", "status", "freshness_constraint", "impact"]}}}},
-    "execution_card": {"type": "object", "required": ["current_action", "current_purchase_pct", "primary_route", "first_condition", "first_conditional_pct", "pre_event_cap_pct", "waiting_use", "primary_reason", "primary_short_term_risk", "avoided_risk", "entry_plan_invalidation", "investment_thesis_review", "expiry", "next_review", "confidence"]}
+    "price_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "medium_term_structure",
+        "short_term_state"
+      ],
+      "properties": {
+        "medium_term_structure": {
+          "enum": [
+            "上昇",
+            "レンジ",
+            "下降",
+            "判定困難"
+          ]
+        },
+        "short_term_state": {
+          "enum": [
+            "上昇加速",
+            "通常調整",
+            "深い調整",
+            "反転試行",
+            "反転確認",
+            "上抜け試行",
+            "上抜け確認",
+            "ブレイク失敗",
+            "下落加速",
+            "判定困難"
+          ]
+        }
+      }
+    },
+    "event_dominance": {
+      "enum": [
+        "高",
+        "中",
+        "低"
+      ]
+    },
+    "price_asymmetry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assumed_entry_zone",
+        "next_resistance_zone",
+        "invalidation_level",
+        "upside_distance",
+        "downside_distance",
+        "assessment"
+      ],
+      "properties": {
+        "assumed_entry_zone": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "[0-9０-９]"
+        },
+        "next_resistance_zone": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "[0-9０-９]"
+        },
+        "invalidation_level": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "[0-9０-９]"
+        },
+        "upside_distance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "downside_distance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "assessment": {
+          "enum": [
+            "有利",
+            "やや有利",
+            "中立",
+            "やや不利",
+            "不利",
+            "判定困難"
+          ]
+        }
+      }
+    },
+    "data_freshness": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dataset",
+          "observed_at",
+          "published_at",
+          "covered_period",
+          "delay_days",
+          "usage",
+          "evidence_strength"
+        ],
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "published_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "covered_period": {
+            "type": "string",
+            "minLength": 1
+          },
+          "delay_days": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "usage": {
+            "enum": [
+              "主要判断に使用",
+              "補助的に使用",
+              "鮮度不足のため方向判断には不使用"
+            ]
+          },
+          "evidence_strength": {
+            "enum": [
+              "強",
+              "中",
+              "弱"
+            ]
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_action",
+        "routes",
+        "route_priority",
+        "allocation",
+        "avoided_risk",
+        "confidence",
+        "primary_reason",
+        "primary_short_term_risk",
+        "missed_opportunity_risk",
+        "return_to_stock_analysis"
+      ],
+      "properties": {
+        "current_action": {
+          "enum": [
+            "現在購入",
+            "条件待ち",
+            "購入計画中止",
+            "個別銘柄分析へ差し戻し"
+          ]
+        },
+        "routes": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "現在値",
+              "押し目",
+              "上抜け",
+              "イベント通過後"
+            ]
+          }
+        },
+        "route_priority": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "現在値",
+              "押し目",
+              "上抜け",
+              "イベント通過後"
+            ]
+          }
+        },
+        "allocation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "current_purchase_pct",
+            "conditional_purchases",
+            "pre_event_cap_pct",
+            "waiting_pct",
+            "waiting_use",
+            "rationale",
+            "adjustment_factors",
+            "unit"
+          ],
+          "properties": {
+            "current_purchase_pct": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 40
+            },
+            "conditional_purchases": {
+              "type": "array",
+              "maxItems": 4,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "route",
+                  "percent",
+                  "condition",
+                  "before_event"
+                ],
+                "properties": {
+                  "route": {
+                    "enum": [
+                      "現在値",
+                      "押し目",
+                      "上抜け",
+                      "イベント通過後"
+                    ]
+                  },
+                  "percent": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 40
+                  },
+                  "condition": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "before_event": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "pre_event_cap_pct": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "waiting_pct": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "waiting_use": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "押し目用",
+                  "上抜け用",
+                  "イベント後用",
+                  "条件失効により未使用"
+                ]
+              }
+            },
+            "rationale": {
+              "type": "string",
+              "minLength": 1
+            },
+            "adjustment_factors": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "中期構造",
+                  "短期状態",
+                  "ボラティリティ",
+                  "相対強度",
+                  "イベント支配度",
+                  "価格非対称性",
+                  "市場環境",
+                  "判断確信度",
+                  "既存保有の有無"
+                ]
+              }
+            },
+            "unit": {
+              "const": "target_position_percent"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "waiting_pct": {
+                    "const": 0
+                  }
+                },
+                "required": [
+                  "waiting_pct"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "waiting_use": {
+                    "maxItems": 0
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "waiting_use": {
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "avoided_risk": {
+          "enum": [
+            "機会損失",
+            "短期下落",
+            "均衡"
+          ]
+        },
+        "confidence": {
+          "enum": [
+            "高",
+            "中",
+            "低"
+          ]
+        },
+        "primary_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "primary_short_term_risk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "missed_opportunity_risk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "return_to_stock_analysis": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "current_action": {
+                "const": "個別銘柄分析へ差し戻し"
+              }
+            },
+            "required": [
+              "current_action"
+            ]
+          },
+          "then": {
+            "properties": {
+              "return_to_stock_analysis": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "current_action": {
+                "enum": [
+                  "現在購入",
+                  "条件待ち"
+                ]
+              }
+            },
+            "required": [
+              "current_action"
+            ]
+          },
+          "then": {
+            "properties": {
+              "routes": {
+                "minItems": 1
+              },
+              "route_priority": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "current_action": {
+                "enum": [
+                  "購入計画中止",
+                  "個別銘柄分析へ差し戻し"
+                ]
+              }
+            },
+            "required": [
+              "current_action"
+            ]
+          },
+          "then": {
+            "properties": {
+              "routes": {
+                "maxItems": 0
+              },
+              "route_priority": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "invalidations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_failure",
+        "entry_plan_invalidation",
+        "investment_thesis_review",
+        "reference_stop"
+      ],
+      "properties": {
+        "condition_failure": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entry_plan_invalidation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "investment_thesis_review": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reference_stop": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "plan_expiry": {
+      "type": "string",
+      "minLength": 1
+    },
+    "next_review": {
+      "type": "string",
+      "minLength": 1
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "overall",
+        "items"
+      ],
+      "properties": {
+        "overall": {
+          "enum": [
+            "全項目実施",
+            "一部限定分析",
+            "重要欠落により判断確信度低下",
+            "全面停止"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item",
+              "status",
+              "freshness_constraint",
+              "impact"
+            ],
+            "properties": {
+              "item": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "enum": [
+                  "完了",
+                  "限定",
+                  "未取得"
+                ]
+              },
+              "freshness_constraint": {
+                "type": "string",
+                "minLength": 1
+              },
+              "impact": {
+                "enum": [
+                  "大",
+                  "中",
+                  "小"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "execution_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_action",
+        "current_purchase_pct",
+        "primary_route",
+        "first_condition",
+        "first_conditional_pct",
+        "pre_event_cap_pct",
+        "waiting_use",
+        "primary_reason",
+        "primary_short_term_risk",
+        "avoided_risk",
+        "entry_plan_invalidation",
+        "investment_thesis_review",
+        "expiry",
+        "next_review",
+        "confidence"
+      ],
+      "properties": {
+        "current_action": {
+          "enum": [
+            "現在購入",
+            "条件待ち",
+            "購入計画中止",
+            "個別銘柄分析へ差し戻し"
+          ]
+        },
+        "current_purchase_pct": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 40
+        },
+        "primary_route": {
+          "enum": [
+            "現在値",
+            "押し目",
+            "上抜け",
+            "イベント通過後"
+          ]
+        },
+        "first_condition": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "[0-9０-９]"
+        },
+        "first_conditional_pct": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 40
+        },
+        "pre_event_cap_pct": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "waiting_use": {
+          "type": "string",
+          "minLength": 1
+        },
+        "primary_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "primary_short_term_risk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "avoided_risk": {
+          "enum": [
+            "機会損失",
+            "短期下落",
+            "均衡"
+          ]
+        },
+        "entry_plan_invalidation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "investment_thesis_review": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expiry": {
+          "type": "string",
+          "minLength": 1
+        },
+        "next_review": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "enum": [
+            "高",
+            "中",
+            "低"
+          ]
+        }
+      }
+    }
   },
-  "$defs": {
-    "decision": {"type": "object", "required": ["current_action", "routes", "route_priority", "allocation"], "properties": {"current_action": {"enum": ["現在購入", "条件待ち", "購入計画中止", "個別銘柄分析へ差し戻し"]}, "routes": {"type": "array", "items": {"enum": ["現在値", "押し目", "上抜け", "イベント通過後"]}, "uniqueItems": true}, "route_priority": {"type": "array"}, "allocation": {"type": "object", "required": ["current_purchase_pct", "conditional_purchases_pct", "pre_event_cap_pct", "waiting_pct", "waiting_use", "rationale", "unit"], "properties": {"current_purchase_pct": {"type": "integer", "minimum": 0, "maximum": 100}, "conditional_purchases_pct": {"type": "array", "items": {"type": "integer", "minimum": 0, "maximum": 40}}, "pre_event_cap_pct": {"type": "integer", "minimum": 0, "maximum": 100}, "waiting_pct": {"type": "integer", "minimum": 0, "maximum": 100}, "waiting_use": {"type": "array", "items": {"type": "string"}}, "rationale": {"type": "string"}, "unit": {"const": "target_position_percent"}}}}}
-  }
+  "$defs": {}
 }

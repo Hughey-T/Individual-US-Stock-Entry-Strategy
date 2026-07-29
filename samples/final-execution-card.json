@@ -1,8 +1,126 @@
 {
-  "decision": {"current_action":"条件待ち","routes":["押し目","上抜け"],"route_priority":["押し目","上抜け"],"allocation":{"current_purchase_pct":0,"conditional_purchases_pct":[30,30],"pre_event_cap_pct":60,"waiting_pct":40,"waiting_use":["押し目用","上抜け用"],"rationale":"中期上昇だが短期は反転試行。支持確認と相対強度で基本範囲へ","unit":"target_position_percent"}},
-  "risk":{"avoided_risk":"均衡","confidence":"中","primary_reason":"中期構造と相対強度を維持","primary_short_term_risk":"主要支持帯割れ","missed_opportunity_risk":"押し目なく上抜ける可能性"},
-  "invalidations":{"condition_failure":"主要支持帯である209～216ドルから反転せず安値更新","entry_plan_invalidation":"主要支持帯を出来高付き終値で割り相対強度も悪化","investment_thesis_review":"ガイダンスまたは需要の重大な悪化","reference_stop":"価格構造とATRを併記して再評価し、単一割合では強制しない"},
-  "plan_expiry":"10営業日後または次回決算の早い方。期限後は再評価必須","next_review":"主要支持帯到達、市場分類変更、重要ニュースのいずれか",
-  "coverage":{"overall":"一部限定分析","items":[{"item":"価格・出来高","status":"完了","freshness_constraint":"当日","impact":"大"},{"item":"機関保有","status":"限定","freshness_constraint":"四半期遅延。方向判断に不使用","impact":"小"}]},
-  "execution_card":{"current_action":"条件待ち","current_purchase_pct":0,"primary_route":"押し目","first_condition":"主要支持帯である209～216ドルで反転し相対強度を維持","first_conditional_pct":30,"pre_event_cap_pct":60,"waiting_use":"押し目用・上抜け用","primary_reason":"中期構造と相対強度を維持","primary_short_term_risk":"主要支持帯割れ","avoided_risk":"均衡","entry_plan_invalidation":"主要支持帯を出来高付き終値で割る","investment_thesis_review":"業績・需要・財務の重大変化","expiry":"10営業日後または次回決算","next_review":"価格帯到達、市場変更、重要イベント","confidence":"中"}
+  "price_state": {
+    "medium_term_structure": "上昇",
+    "short_term_state": "反転試行"
+  },
+  "event_dominance": "中",
+  "price_asymmetry": {
+    "assumed_entry_zone": "主要支持帯である209～216ドル",
+    "next_resistance_zone": "短期抵抗帯である226～230ドル",
+    "invalidation_level": "主要支持帯下限209ドル未満",
+    "upside_distance": 10,
+    "downside_distance": 7,
+    "assessment": "やや有利"
+  },
+  "data_freshness": [
+    {
+      "dataset": "価格・出来高",
+      "observed_at": "2026-07-28",
+      "published_at": "2026-07-28",
+      "covered_period": "当日および過去60営業日",
+      "delay_days": 0,
+      "usage": "主要判断に使用",
+      "evidence_strength": "強"
+    },
+    {
+      "dataset": "機関保有",
+      "observed_at": "2026-03-31",
+      "published_at": "2026-05-15",
+      "covered_period": "2026年1～3月",
+      "delay_days": 74,
+      "usage": "鮮度不足のため方向判断には不使用",
+      "evidence_strength": "弱"
+    }
+  ],
+  "decision": {
+    "current_action": "条件待ち",
+    "routes": [
+      "押し目",
+      "上抜け"
+    ],
+    "route_priority": [
+      "押し目",
+      "上抜け"
+    ],
+    "allocation": {
+      "current_purchase_pct": 0,
+      "conditional_purchases": [
+        {
+          "route": "押し目",
+          "percent": 30,
+          "condition": "主要支持帯である209～216ドルで反転確認",
+          "before_event": true
+        },
+        {
+          "route": "上抜け",
+          "percent": 30,
+          "condition": "短期抵抗帯である226～230ドルを出来高付き終値で上回る",
+          "before_event": false
+        }
+      ],
+      "pre_event_cap_pct": 30,
+      "waiting_pct": 40,
+      "waiting_use": [
+        "押し目用",
+        "上抜け用"
+      ],
+      "rationale": "支持確認は20～30%の基本範囲。イベント支配度中のため上抜け分はイベント後へ抑制",
+      "adjustment_factors": [
+        "中期構造",
+        "短期状態",
+        "相対強度",
+        "イベント支配度",
+        "価格非対称性"
+      ],
+      "unit": "target_position_percent"
+    },
+    "avoided_risk": "均衡",
+    "confidence": "中",
+    "primary_reason": "中期構造と相対強度を維持",
+    "primary_short_term_risk": "主要支持帯割れ",
+    "missed_opportunity_risk": "押し目なく上抜ける可能性",
+    "return_to_stock_analysis": false
+  },
+  "invalidations": {
+    "condition_failure": "主要支持帯で反転した後に反転前安値を明確に割る",
+    "entry_plan_invalidation": "主要支持帯を出来高付き終値で割り相対強度も継続悪化",
+    "investment_thesis_review": "ガイダンス、需要、財務または希薄化前提の重大変化",
+    "reference_stop": "主要支持帯、ATR、通常変動を併記して参考評価し、固定割合では強制しない"
+  },
+  "plan_expiry": "10営業日後または次回決算の早い方。期限後は再評価必須",
+  "next_review": "主要支持帯到達、市場分類変更、重要ニュースのいずれか",
+  "coverage": {
+    "overall": "一部限定分析",
+    "items": [
+      {
+        "item": "価格・出来高",
+        "status": "完了",
+        "freshness_constraint": "当日",
+        "impact": "大"
+      },
+      {
+        "item": "機関保有",
+        "status": "限定",
+        "freshness_constraint": "四半期遅延、方向判断に不使用",
+        "impact": "小"
+      }
+    ]
+  },
+  "execution_card": {
+    "current_action": "条件待ち",
+    "current_purchase_pct": 0,
+    "primary_route": "押し目",
+    "first_condition": "主要支持帯である209～216ドルで反転確認",
+    "first_conditional_pct": 30,
+    "pre_event_cap_pct": 30,
+    "waiting_use": "押し目用・上抜け用",
+    "primary_reason": "中期構造と相対強度を維持",
+    "primary_short_term_risk": "主要支持帯割れ",
+    "avoided_risk": "均衡",
+    "entry_plan_invalidation": "主要支持帯を出来高付き終値で割る",
+    "investment_thesis_review": "業績・需要・財務・希薄化の重大変化",
+    "expiry": "10営業日後または次回決算",
+    "next_review": "価格帯到達、市場変更、重要イベント",
+    "confidence": "中"
+  }
 }

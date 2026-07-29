@@ -1,3 +1,3 @@
-# Phase契約
+# Phase実装対応
 
-Phaseの名称、内容、進行文言、更新フローの正本は[正本指示](../instructions/custom-gpt-entry-strategy.md#初回8-phase)を参照する。実装は `src/entry_strategy/engine.py`、契約テストは `tests/test_instruction_contract.py` にある。1応答は1 Phaseであり、完了後の追加進行はエラーになる。
+Phaseの名称、必須項目、入力、出力、禁止事項、進行文言の唯一の規範は[正本指示](../instructions/custom-gpt-entry-strategy.md)である。`src/entry_strategy/engine.py`の`PHASE_SECTIONS`は初回Phase 1～8と更新Phase 1～2の実行単位を識別し、`tests/test_phase_engine.py`が開始、1応答1 Phase、最終停止、更新開始条件を実遷移で検証する。最終出力は`entry-strategy-output.schema.json`、事後検証は`entry-strategy-update-review.schema.json`で検証する。

@@ -1,3 +1,3 @@
-# Validation report
+# 検証設計
 
-`python -m entry_strategy.validation --all` は全JSONの構文を確認する。unittestは状態遷移、スキーマ、比率、価格帯ロック、価格境界、鮮度、イベント、移行、正本契約とサンプルを検証する。ruffとmypyをlint/format/type checkに使う。実行コマンドはREADMEを正本として参照する。
+READMEの6コマンドをローカルとCIで共通使用する。`entry_strategy.validation --all` は正常fixtureと最終サンプルをJSON Schemaへ通し、異常allocation fixtureがcross-field validatorに拒否されることまで確認する。unittestは会話遷移、Phase 4価格帯ロック、比率会計、イベント前上限、鮮度、価格境界、全旧判定、Schemaの条件依存、正本エクスポートを挙動として検証する。
