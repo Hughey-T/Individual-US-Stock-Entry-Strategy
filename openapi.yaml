@@ -1,0 +1,16 @@
+openapi: 3.1.0
+info:
+  title: Entry Strategy Portable Schema Components
+  version: 2.0.0
+  description: >-
+    実装済みHTTP APIではなく、状態と最終出力の再利用可能なSchema参照を収録する設計資料。
+    このリポジトリはHTTPサーバー、稼働エンドポイント、注文執行を提供しない。
+x-runtime-available: false
+servers: []
+paths: {}
+components:
+  schemas:
+    EntryStrategyState:
+      $ref: './schemas/entry-strategy-state.schema.json'
+    EntryStrategyOutput:
+      $ref: './schemas/entry-strategy-output.schema.json'

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/entry-strategy-update-review.schema.json",
+  "title": "Update Phase 2 review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mode",
+    "phase",
+    "conditions_met",
+    "conditions_unmet",
+    "observation_window",
+    "maximum_rise_pct",
+    "maximum_decline_pct",
+    "entry_setup_invalidated",
+    "opportunity_cost",
+    "normal_volatility_effect",
+    "zones_review",
+    "allocation_review",
+    "valid_reasoning",
+    "corrections",
+    "template_learning",
+    "prompt_next"
+  ],
+  "properties": {
+    "mode": {
+      "const": "update"
+    },
+    "phase": {
+      "const": 2
+    },
+    "conditions_met": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "conditions_unmet": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "observation_window": {
+      "type": "string",
+      "minLength": 1
+    },
+    "maximum_rise_pct": {
+      "type": "number"
+    },
+    "maximum_decline_pct": {
+      "type": "number"
+    },
+    "entry_setup_invalidated": {
+      "type": "boolean"
+    },
+    "opportunity_cost": {
+      "type": "string",
+      "minLength": 1
+    },
+    "normal_volatility_effect": {
+      "type": "string",
+      "minLength": 1
+    },
+    "zones_review": {
+      "type": "string",
+      "minLength": 1
+    },
+    "allocation_review": {
+      "type": "string",
+      "minLength": 1
+    },
+    "valid_reasoning": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "corrections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "template_learning": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "prompt_next": {
+      "const": false
+    }
+  }
+}

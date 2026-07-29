@@ -1,0 +1,19 @@
+{
+  "current_purchase_pct": 20,
+  "conditional_purchases": [
+    {
+      "route": "押し目",
+      "percent": 50,
+      "condition": "支持確認",
+      "before_event": true
+    }
+  ],
+  "pre_event_cap_pct": 30,
+  "waiting_pct": 30,
+  "waiting_use": [],
+  "rationale": "invalid",
+  "adjustment_factors": [
+    "許可されない要因"
+  ],
+  "unit": "total_asset_percent"
+}

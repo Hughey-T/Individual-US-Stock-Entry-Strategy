@@ -1,0 +1,26 @@
+{
+  "schema_version": "2.0.0",
+  "ticker": "ACME",
+  "mode": "initial",
+  "current_phase": 4,
+  "initial_complete": false,
+  "zones_locked": true,
+  "zones_locked_at_phase": 4,
+  "price_zones": {
+    "support": {
+      "internal_id": "support",
+      "label": "主要支持帯",
+      "low": 209,
+      "high": 216,
+      "currency": "USD"
+    }
+  },
+  "zone_revisions": [],
+  "medium_term_structure": "上昇",
+  "short_term_state": "反転試行",
+  "event_dominance": null,
+  "price_asymmetry": null,
+  "decision": null,
+  "plan_expiry": null,
+  "next_review": null
+}
