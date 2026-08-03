@@ -1,0 +1,960 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/entry-strategy/3.0.0",
+  "title": "Entry Strategy Contract 3.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "strategy_identity",
+    "security_identity",
+    "mode",
+    "source_cutoff",
+    "phase",
+    "persistence_state"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "3.0.0"
+    },
+    "strategy_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "security_identity": {
+      "$ref": "#/$defs/security"
+    },
+    "mode": {
+      "enum": [
+        "standalone_static",
+        "standalone_runtime",
+        "pipeline"
+      ]
+    },
+    "source_cutoff": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "phase": {
+      "$ref": "#/$defs/phase"
+    },
+    "persistence_state": {
+      "enum": [
+        "not_generated",
+        "generated_not_persisted",
+        "persisted_pending_verification",
+        "integrity_verified",
+        "failed_terminal",
+        "expired",
+        "superseded",
+        "session_local"
+      ]
+    },
+    "blind_handoff": {
+      "$ref": "#/$defs/blind"
+    },
+    "reconciliation_handoff": {
+      "$ref": "#/$defs/reconciliation"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "signals": {
+      "$ref": "#/$defs/signals"
+    },
+    "entry_gate": {
+      "$ref": "#/$defs/gate"
+    },
+    "valuation_reference_range": {
+      "$ref": "#/$defs/value"
+    },
+    "technical_reference_zones": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/zone"
+      }
+    },
+    "zone_revisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/revision"
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/route"
+      }
+    },
+    "allocation": {
+      "$ref": "#/$defs/allocation"
+    },
+    "terminal_stop": {
+      "$ref": "#/$defs/terminal"
+    },
+    "decision_ledger": {
+      "type": "object"
+    },
+    "outcome": {
+      "$ref": "#/$defs/outcome"
+    }
+  },
+  "$defs": {
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ticker",
+        "company",
+        "exchange",
+        "currency"
+      ],
+      "properties": {
+        "ticker": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "exchange": {
+          "type": "string"
+        },
+        "currency": {
+          "const": "USD"
+        }
+      }
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "number"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "initial",
+            "update"
+          ]
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "artifact_identity": {
+          "type": "string"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "classification",
+        "source",
+        "as_of",
+        "retrieved_at"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "classification": {
+          "enum": [
+            "FACTS",
+            "COMPANY_CLAIMS",
+            "EXTERNAL_ESTIMATES",
+            "AI_ASSUMPTIONS",
+            "AI_JUDGMENTS",
+            "UNRESOLVED"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "as_of": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "retrieved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "value": {}
+      }
+    },
+    "blind": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "handoff_identity": {
+          "type": "string"
+        },
+        "analysis_as_of": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "current_reference_price": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "value_ranges": {
+          "type": "array"
+        },
+        "cruxes": {
+          "type": "array"
+        },
+        "catalysts": {
+          "type": "array"
+        },
+        "invalidation_conditions": {
+          "type": "array"
+        },
+        "event_dates": {
+          "type": "array"
+        },
+        "unresolved_factual_issues": {
+          "type": "array"
+        },
+        "evidence_refs": {
+          "type": "array"
+        },
+        "investment_horizons": {
+          "type": "array"
+        }
+      }
+    },
+    "reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "upstream_investment_eligibility",
+        "upstream_current_price_assessment",
+        "upstream_decision_ledger_identity"
+      ],
+      "properties": {
+        "upstream_investment_eligibility": {
+          "type": "string"
+        },
+        "upstream_current_price_assessment": {
+          "type": "string"
+        },
+        "upstream_value_conclusion": {
+          "type": "string"
+        },
+        "upstream_robustness_classification": {
+          "type": "string"
+        },
+        "upstream_strongest_positive": {
+          "type": "string"
+        },
+        "upstream_strongest_negative": {
+          "type": "string"
+        },
+        "upstream_unresolved_disagreement": {
+          "type": "string"
+        },
+        "upstream_handoff_status": {
+          "type": "string"
+        },
+        "upstream_decision_ledger_identity": {
+          "type": "string"
+        }
+      }
+    },
+    "signals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "thesis",
+        "valuation",
+        "price_structure",
+        "event_risk",
+        "market_regime"
+      ],
+      "properties": {
+        "thesis": {
+          "enum": [
+            "supportive",
+            "conditionally_supportive",
+            "adverse",
+            "invalidated",
+            "insufficient_evidence"
+          ]
+        },
+        "valuation": {
+          "enum": [
+            "attractive",
+            "acceptable",
+            "marginal",
+            "unattractive",
+            "not_evaluable"
+          ]
+        },
+        "price_structure": {
+          "enum": [
+            "supportive",
+            "neutral",
+            "adverse",
+            "unstable",
+            "not_evaluable"
+          ]
+        },
+        "event_risk": {
+          "enum": [
+            "LOW",
+            "MANAGEABLE",
+            "DOMINANT",
+            "BINARY",
+            "UNKNOWN"
+          ]
+        },
+        "market_regime": {
+          "enum": [
+            "supportive",
+            "mixed",
+            "adverse",
+            "dislocated",
+            "not_evaluable"
+          ]
+        }
+      }
+    },
+    "gate": {
+      "enum": [
+        "ENTRY_PLANNING_ALLOWED",
+        "ENTRY_PLANNING_CONDITIONAL",
+        "WAIT_WITHOUT_PLAN",
+        "NO_ENTRY",
+        "RETURN_TO_INDIVIDUAL_ANALYSIS",
+        "INSUFFICIENT_EVIDENCE"
+      ]
+    },
+    "value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "low",
+        "high",
+        "currency",
+        "as_of"
+      ],
+      "properties": {
+        "low": {
+          "type": "number"
+        },
+        "high": {
+          "type": "number"
+        },
+        "currency": {
+          "const": "USD"
+        },
+        "as_of": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "zone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "zone_id",
+        "zone_type",
+        "low",
+        "high",
+        "currency",
+        "adjusted"
+      ],
+      "properties": {
+        "zone_id": {
+          "type": "string"
+        },
+        "zone_type": {
+          "enum": [
+            "support_reference",
+            "deep_support_reference",
+            "equilibrium_reference",
+            "resistance_reference",
+            "breakout_reference",
+            "failure_reference"
+          ]
+        },
+        "low": {
+          "type": "number"
+        },
+        "high": {
+          "type": "number"
+        },
+        "currency": {
+          "const": "USD"
+        },
+        "adjusted": {
+          "const": true
+        }
+      }
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "old_zone",
+        "new_zone",
+        "reason",
+        "changed_evidence",
+        "plan_impact",
+        "changed_phase",
+        "revision_timestamp",
+        "previous_hash",
+        "new_hash"
+      ],
+      "properties": {
+        "old_zone": {
+          "$ref": "#/$defs/zone"
+        },
+        "new_zone": {
+          "$ref": "#/$defs/zone"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "changed_evidence": {
+          "type": "array"
+        },
+        "plan_impact": {
+          "type": "string"
+        },
+        "changed_phase": {
+          "type": "integer"
+        },
+        "revision_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "previous_hash": {
+          "type": "string"
+        },
+        "new_hash": {
+          "type": "string"
+        }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route_id",
+        "route_type",
+        "eligibility",
+        "priority",
+        "price_condition",
+        "valuation_condition",
+        "volume_condition",
+        "relative_strength_condition",
+        "market_condition",
+        "event_condition",
+        "confirmation_window",
+        "failure_condition",
+        "expiry"
+      ],
+      "properties": {
+        "route_id": {
+          "type": "string"
+        },
+        "route_type": {
+          "enum": [
+            "CURRENT_PRICE_ROUTE",
+            "PULLBACK_ROUTE",
+            "BREAKOUT_ROUTE",
+            "POST_EVENT_ROUTE",
+            "NO_ROUTE"
+          ]
+        },
+        "eligibility": {
+          "type": "boolean"
+        },
+        "priority": {
+          "type": "integer"
+        },
+        "price_condition": {
+          "type": "string"
+        },
+        "valuation_condition": {
+          "type": "string"
+        },
+        "volume_condition": {
+          "type": "string"
+        },
+        "relative_strength_condition": {
+          "type": "string"
+        },
+        "market_condition": {
+          "type": "string"
+        },
+        "event_condition": {
+          "type": "string"
+        },
+        "confirmation_window": {
+          "type": "string"
+        },
+        "failure_condition": {
+          "type": "string"
+        },
+        "expiry": {
+          "type": "string"
+        },
+        "transition": {
+          "type": "string"
+        }
+      }
+    },
+    "allocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_purchase_pct",
+        "conditional_purchases",
+        "waiting_pct",
+        "waiting_use",
+        "pre_event_cap_pct",
+        "unit"
+      ],
+      "properties": {
+        "current_purchase_pct": {
+          "type": "integer",
+          "maximum": 40
+        },
+        "conditional_purchases": {
+          "type": "array"
+        },
+        "waiting_pct": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "waiting_use": {
+          "type": "array"
+        },
+        "pre_event_cap_pct": {
+          "type": "integer"
+        },
+        "unit": {
+          "const": "target_position_percent"
+        }
+      }
+    },
+    "terminal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "terminal_state",
+        "reason",
+        "missing_evidence",
+        "required_next_action",
+        "reactivation_condition",
+        "monitoring_condition"
+      ],
+      "properties": {
+        "terminal_state": {
+          "$ref": "#/$defs/gate"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "missing_evidence": {
+          "type": "array"
+        },
+        "required_next_action": {
+          "type": "string"
+        },
+        "reactivation_condition": {
+          "type": "string"
+        },
+        "monitoring_condition": {
+          "type": "string"
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "observation_cutoff"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_matured",
+            "matured"
+          ]
+        },
+        "observation_cutoff": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "atr_normalized_adverse_excursion",
+            "benchmark_relative_return",
+            "breakout_route_result",
+            "confidence_calibration",
+            "current_entry_result",
+            "event_gap_result",
+            "expiry_effectiveness",
+            "false_breakout_rate",
+            "invalidation_timing",
+            "maximum_adverse_excursion",
+            "maximum_favorable_excursion",
+            "no_entry_result",
+            "plan_robustness",
+            "post_event_route_result",
+            "post_trigger_return",
+            "pullback_route_result",
+            "ratio_adequacy",
+            "return_to_analysis_result",
+            "route_trigger_rate",
+            "sector_relative_return",
+            "support_failure_rate",
+            "trigger_timing",
+            "waiting_opportunity_cost"
+          ],
+          "properties": {
+            "atr_normalized_adverse_excursion": {},
+            "benchmark_relative_return": {},
+            "breakout_route_result": {},
+            "confidence_calibration": {},
+            "current_entry_result": {},
+            "event_gap_result": {},
+            "expiry_effectiveness": {},
+            "false_breakout_rate": {},
+            "invalidation_timing": {},
+            "maximum_adverse_excursion": {},
+            "maximum_favorable_excursion": {},
+            "no_entry_result": {},
+            "plan_robustness": {},
+            "post_event_route_result": {},
+            "post_trigger_return": {},
+            "pullback_route_result": {},
+            "ratio_adequacy": {},
+            "return_to_analysis_result": {},
+            "route_trigger_rate": {},
+            "sector_relative_return": {},
+            "support_failure_rate": {},
+            "trigger_timing": {},
+            "waiting_opportunity_cost": {}
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "not_matured"
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "metrics"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "matured"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "metrics"
+            ]
+          }
+        }
+      ]
+    },
+    "adversarial_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checks",
+        "new_evidence",
+        "resulting_gate"
+      ],
+      "properties": {
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "cash_superior",
+            "chase_risk",
+            "current_vs_waiting_expected_value",
+            "event_gap_risk",
+            "false_breakout",
+            "false_support",
+            "loss_avoidance_overstatement",
+            "market_beta",
+            "opportunity_cost_overstatement",
+            "route_reversal",
+            "short_covering",
+            "technical_strength_thesis_deterioration",
+            "thesis_valid_price_unattractive",
+            "unknown_information",
+            "valuation_attractive_structure_unstable"
+          ],
+          "properties": {
+            "cash_superior": {
+              "type": "string",
+              "minLength": 1
+            },
+            "chase_risk": {
+              "type": "string",
+              "minLength": 1
+            },
+            "current_vs_waiting_expected_value": {
+              "type": "string",
+              "minLength": 1
+            },
+            "event_gap_risk": {
+              "type": "string",
+              "minLength": 1
+            },
+            "false_breakout": {
+              "type": "string",
+              "minLength": 1
+            },
+            "false_support": {
+              "type": "string",
+              "minLength": 1
+            },
+            "loss_avoidance_overstatement": {
+              "type": "string",
+              "minLength": 1
+            },
+            "market_beta": {
+              "type": "string",
+              "minLength": 1
+            },
+            "opportunity_cost_overstatement": {
+              "type": "string",
+              "minLength": 1
+            },
+            "route_reversal": {
+              "type": "string",
+              "minLength": 1
+            },
+            "short_covering": {
+              "type": "string",
+              "minLength": 1
+            },
+            "technical_strength_thesis_deterioration": {
+              "type": "string",
+              "minLength": 1
+            },
+            "thesis_valid_price_unattractive": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unknown_information": {
+              "type": "string",
+              "minLength": 1
+            },
+            "valuation_attractive_structure_unstable": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "resulting_gate": {
+          "$ref": "#/$defs/gate"
+        },
+        "new_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "simulation_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contradictory_actions",
+        "duplicate_allocation",
+        "invalidation",
+        "reevaluation_required",
+        "route_precedence",
+        "scenario",
+        "stale_zone",
+        "triggered_ratio",
+        "triggered_route",
+        "unused_ratio"
+      ],
+      "properties": {
+        "scenario": {
+          "enum": [
+            "breakout_maintained",
+            "event_gap_down",
+            "event_gap_up",
+            "expiry",
+            "failed_breakout",
+            "market_selloff",
+            "normal_pullback",
+            "pre_event_trigger",
+            "sector_selloff",
+            "sharp_rise",
+            "support_bounce",
+            "support_break",
+            "thesis_deterioration",
+            "volatility_spike"
+          ]
+        },
+        "triggered_route": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "triggered_ratio": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "route_precedence": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "unused_ratio": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "invalidation": {
+          "type": "boolean"
+        },
+        "contradictory_actions": {
+          "type": "boolean"
+        },
+        "duplicate_allocation": {
+          "type": "boolean"
+        },
+        "stale_zone": {
+          "type": "boolean"
+        },
+        "reevaluation_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "decision_ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active_routes",
+        "analysis_handoff_identity",
+        "artifact_hashes",
+        "as_of",
+        "confidence",
+        "current_action",
+        "entry_gate",
+        "event_signal",
+        "expiry",
+        "invalidation",
+        "market_regime_signal",
+        "pre_event_maximum",
+        "price_signal",
+        "ratios",
+        "reference_price",
+        "route_priority",
+        "security_identity",
+        "source_cutoff",
+        "strategy_identity",
+        "strongest_objection",
+        "strongest_reason",
+        "technical_zones",
+        "thesis_signal",
+        "valuation_reference_range",
+        "valuation_signal"
+      ],
+      "properties": {
+        "active_routes": {},
+        "analysis_handoff_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_hashes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "as_of": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "current_action": {},
+        "entry_gate": {},
+        "event_signal": {},
+        "expiry": {
+          "type": "string",
+          "minLength": 1
+        },
+        "invalidation": {},
+        "market_regime_signal": {},
+        "pre_event_maximum": {},
+        "price_signal": {},
+        "ratios": {},
+        "reference_price": {},
+        "route_priority": {},
+        "security_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_cutoff": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strategy_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strongest_objection": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strongest_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "technical_zones": {},
+        "thesis_signal": {},
+        "valuation_reference_range": {},
+        "valuation_signal": {}
+      }
+    }
+  }
+}

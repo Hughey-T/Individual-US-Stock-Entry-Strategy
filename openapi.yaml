@@ -1,16 +1,135 @@
 openapi: 3.1.0
 info:
-  title: Entry Strategy Portable Schema Components
-  version: 2.0.0
-  description: >-
-    実装済みHTTP APIではなく、状態と最終出力の再利用可能なSchema参照を収録する設計資料。
-    このリポジトリはHTTPサーバー、稼働エンドポイント、注文執行を提供しない。
-x-runtime-available: false
-servers: []
-paths: {}
+  title: Individual US Stock Entry Strategy private runtime
+  version: 3.0.0
+  description: Validates and stores caller-created artifacts; never generates market research or investment analysis.
+servers: [{url: http://localhost:8080}]
+security: [{bearerAuth: []}]
+paths:
+  /health:
+    get:
+      security: []
+      operationId: health
+      responses: {'200': {description: healthy; runtime does not generate analysis}}
+  /sessions:
+    post:
+      operationId: createSession
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/SessionInput'}}}
+      responses: {'201': {description: standalone or pipeline session created}, '401': {description: unauthorized}}
+  /sessions/{session_id}/next:
+    get:
+      operationId: getNextPhaseContract
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      responses: {'200': {description: next phase contract}}
+  /sessions/{session_id}/resume:
+    get:
+      operationId: resumeSession
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      responses: {'200': {description: persisted state and contract}}
+  /sessions/{session_id}/phases/{phase}:
+    post:
+      operationId: submitPhaseArtifact
+      parameters:
+        - {$ref: '#/components/parameters/SessionId'}
+        - {in: path, name: phase, required: true, schema: {type: string, pattern: '^(initial-(?:[1-9]|1[0-2])|update-[1-5])$'}}
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        '201': {description: atomically accepted and readback verified, content: {application/json: {schema: {$ref: '#/components/schemas/Receipt'}}}}
+        '422': {description: rejected without advancing state}
+  /sessions/{session_id}/entry-gate:
+    post:
+      operationId: freezeIndependentEntryGate
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {'200': {description: immutable gate frozen}, '422': {description: wrong phase or overwrite}}
+  /sessions/{session_id}/reconciliation:
+    post:
+      operationId: discloseUpstreamReconciliation
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      responses: {'200': {description: disclosure unlocked}, '422': {description: gate not frozen}}
+  /sessions/{session_id}/terminal:
+    post:
+      operationId: recordTerminalEarlyStop
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {'200': {description: terminal outcome recorded without further phase prompt}}
+  /sessions/{session_id}/updates:
+    post:
+      operationId: startUpdate
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      responses: {'201': {description: update phase 1 contract}, '422': {description: initial incomplete}}
+  /sessions/{session_id}/active:
+    get:
+      operationId: getActivePlan
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      responses: {'200': {description: active immutable artifact}}
+  /sessions/{session_id}/superseded:
+    get:
+      operationId: getSupersededPlans
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      responses: {'200': {description: superseded generation identities}}
+  /sessions/{session_id}/ledger:
+    get:
+      operationId: getDecisionLedger
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      responses: {'200': {description: active and immutable generation inventory}}
+  /sessions/{session_id}/integrity:
+    get:
+      operationId: verifySessionIntegrity
+      parameters: [{$ref: '#/components/parameters/SessionId'}]
+      responses: {'200': {description: hash and inventory verification}}
+  /backups:
+    post:
+      operationId: createVerifiedBackup
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {'201': {description: verified backup created}}
+  /restores:
+    post:
+      operationId: restoreVerifiedBackup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [archive, destination]
+              properties:
+                archive: {type: string, minLength: 1}
+                destination: {type: string, minLength: 1}
+      responses:
+        '201': {description: backup restored after staged integrity verification}
+        '422': {description: unsafe or invalid archive rejected}
 components:
+  securitySchemes:
+    bearerAuth: {type: http, scheme: bearer}
+  parameters:
+    SessionId: {in: path, name: session_id, required: true, schema: {type: string, format: uuid}}
   schemas:
-    EntryStrategyState:
-      $ref: './schemas/entry-strategy-state.schema.json'
-    EntryStrategyOutput:
-      $ref: './schemas/entry-strategy-output.schema.json'
+    SessionInput:
+      type: object
+      additionalProperties: false
+      required: [ticker, mode]
+      properties:
+        ticker: {type: string, minLength: 1}
+        mode: {enum: [standalone_runtime, pipeline]}
+    Receipt:
+      type: object
+      additionalProperties: false
+      required: [accepted, replay, readback_verified, raw_sha256, canonical_sha256]
+      properties:
+        accepted: {type: boolean}
+        replay: {type: boolean}
+        readback_verified: {type: boolean}
+        raw_sha256: {type: string, pattern: '^[0-9a-f]{64}$'}
+        canonical_sha256: {type: string, pattern: '^[0-9a-f]{64}$'}
+        strategy_identity: {type: string}
+        phase_identity: {type: string}
+        artifact_identity: {type: string}
+        contract_version: {const: 3.0.0}
+        schema_version: {const: 3.0.0}
+        byte_length: {type: integer, minimum: 0}
+        inventory: {type: array, prefixItems: [{const: artifact.json}, {const: manifest.json}], items: false}
+        next_contract: {type: object}
