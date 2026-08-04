@@ -1,3 +1,5 @@
-# 検証設計
+# Validation and test matrix
 
-READMEの6コマンドをローカルとCIで共通使用する。`entry_strategy.validation --all` は正常fixtureと最終サンプルをJSON Schemaへ通し、異常allocation fixtureがcross-field validatorに拒否されることまで確認する。unittestは会話遷移、Phase 4価格帯ロック、比率会計、イベント前上限、鮮度、価格境界、全旧判定、Schemaの条件依存、正本エクスポートを挙動として検証する。
+Schema validation defaults to closed objects for v3 typed components. Semantic checks cover exact phase progression, blind disclosure order, gate immutability, future evidence, strict later update cutoff (including timezone-equivalent rejection), adjusted/non-overlapping USD zones and revision hashes, route uniqueness/precedence/condition coverage, 100% arithmetic, 40% trigger cap, pre-event cap, terminal zero purchases, BINARY exceptions, immutable publication inventory and readback. Strict JSON rejects duplicate keys, malformed UTF-8 and non-finite numbers.
+
+Unit tests include Initial 12/Update 5 E2E, static/pipeline state, terminal stop, schema positive/negative legacy compatibility, semantic mutations, publication replay/tamper, migration and canonical export. CI runs Python 3.11–3.13, Ruff/format/mypy, package build/install, OpenAPI parsing, Docker build, validation CLI and `git diff --check`. Analytical quality remains the GPT's responsibility and cannot be manufactured by validators.
